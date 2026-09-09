@@ -4,6 +4,7 @@ import {
   LOGGER_SERVICE,
   type ILoggerService,
 } from '../../application/interfaces/logger.service.interface.ts';
+import { env } from '../config/env.ts';
 
 function statusFrom(err: unknown): number {
   if (
@@ -38,9 +39,7 @@ export function errorHandlerMiddleware(
   });
 
   const publicMessage =
-    status >= 500 && process.env.NODE_ENV === 'production'
-      ? 'Internal Server Error'
-      : message;
+    status >= 500 && env.NODE_ENV === 'production' ? 'Internal Server Error' : message;
 
   res.status(status).json({ statusCode: status, message: publicMessage, data: null });
 }

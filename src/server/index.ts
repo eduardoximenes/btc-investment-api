@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { env } from './config/env.ts';
 import './config/di.ts';
 
 import express, { type Express } from 'express';
@@ -25,9 +26,6 @@ app.use(API_PREFIX, routes);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = Number.parseInt(process.env.PORT ?? '3000', 10);
-const host = process.env.HOST ?? '0.0.0.0';
-
-app.listen(port, host, () => {
-  console.log(`Server running at http://${host}:${port}${API_PREFIX}`);
+app.listen(env.PORT, env.HOST, () => {
+  console.log(`Server running at http://${env.HOST}:${env.PORT}${API_PREFIX}`);
 });

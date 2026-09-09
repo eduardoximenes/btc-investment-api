@@ -11,9 +11,9 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "tsx watch src/server/index.ts",
+    "dev": "tsx watch --env-file-if-exists=.env src/server/index.ts",
     "build": "tsc",
-    "start": "node dist/server/index.js",
+    "start": "node --env-file-if-exists=.env dist/server/index.js",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,7 +30,8 @@
   "dependencies": {
     "express": "^5.2.1",
     "reflect-metadata": "^0.2.2",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "zod": "^4.6.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
