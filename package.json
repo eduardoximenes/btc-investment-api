@@ -15,7 +15,10 @@
     "build": "tsc",
     "start": "node --env-file-if-exists=.env dist/server/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:generate": "node --env-file-if-exists=.env node_modules/.bin/prisma generate",
+    "db:migrate": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate dev",
+    "db:migrate:deploy": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate deploy"
   },
   "repository": {
     "type": "git",
@@ -28,6 +31,8 @@
   },
   "homepage": "https://github.com/eduardoximenes/btc-investment-api#readme",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "express": "^5.2.1",
     "pino": "^10.3.1",
     "reflect-metadata": "^0.2.2",
@@ -37,6 +42,7 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^26.5.0",
+    "prisma": "^7.10.0",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
   }

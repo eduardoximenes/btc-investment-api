@@ -1,0 +1,16 @@
+// Foundation schema for ticket #13 (Prisma <-> Postgres wiring).
+// No models yet — each feature ticket (User, Account, Investment, ...) adds
+// its own via CONTEXT.md's domain glossary. Convention: numeric
+// autoincrementing primary keys (`Int @id @default(autoincrement())`), no
+// UUIDs (see issue #1's Implementation Decisions).
+
+// Connection URL lives in prisma.config.ts (Prisma 7 no longer reads it
+// from this schema file) and, at runtime, in the driver adapter passed to
+// PrismaClient — see src/infrastructure/database/prisma.client.ts.
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
