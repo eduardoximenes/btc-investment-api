@@ -13,9 +13,18 @@ function mixin(): Record<string, unknown> {
 }
 
 // Callers pass an `err` field in meta (e.g. `logger.error(msg, { err })`) and
-// get pino's standard Error serialization (message, stack, cause, type — even
-// for non-Error throws) instead of each call site picking fields by hand.
-const serializers = { err: pino.stdSerializers.err };
+// get consistent Error serialization instead of each call site picking
+// fields by hand. Deliberately NOT pino.stdSerializers.err: it also copies
+// every other own-enumerable property of the error (plus a `raw: err`
+// reference back to the original) — fine for a plain JS Error, but Prisma/pg
+// errors can carry things like the failing query or connection details in
+// extra fields, and those would otherwise get logged verbatim.
+function errSerializer(err: unknown): unknown {
+  if (!(err instanceof Error)) return err;
+  return { type: err.name, message: err.message, stack: err.stack };
+}
+
+const serializers = { err: errSerializer };
 
 /**
  * Request/HTTP-originated logs. Writes to stdout so live traffic can be

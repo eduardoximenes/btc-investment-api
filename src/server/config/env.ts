@@ -16,19 +16,11 @@ const envSchema = z.object({
 
 export type Env = z.infer<typeof envSchema>;
 
-function formatIssues(error: z.ZodError): string {
-  return error.issues
-    .map((issue) => `  - ${issue.path.join('.') || '(root)'}: ${issue.message}`)
-    .join('\n');
-}
-
 function parseEnv(source: NodeJS.ProcessEnv): Env {
   const result = envSchema.safeParse(source);
 
   if (!result.success) {
-    console.error(
-      `Invalid environment configuration. Fix the following variable(s):\n${formatIssues(result.error)}`,
-    );
+    console.error(`Invalid environment configuration:\n${z.prettifyError(result.error)}`);
     process.exit(1);
   }
 

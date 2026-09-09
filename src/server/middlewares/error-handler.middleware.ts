@@ -11,7 +11,10 @@ function statusFrom(err: unknown): number {
     err !== null &&
     typeof err === 'object' &&
     'status' in err &&
-    typeof err.status === 'number'
+    typeof err.status === 'number' &&
+    Number.isInteger(err.status) &&
+    err.status >= 100 &&
+    err.status <= 599
   ) {
     return err.status;
   }
