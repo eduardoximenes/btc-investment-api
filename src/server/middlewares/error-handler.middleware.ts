@@ -33,10 +33,7 @@ export function errorHandlerMiddleware(
   const status = statusFrom(err);
   const message = err instanceof Error ? err.message : 'Internal Server Error';
 
-  logger.error(message, {
-    statusCode: status,
-    stack: err instanceof Error ? err.stack : undefined,
-  });
+  logger.error(message, { statusCode: status, err });
 
   const publicMessage =
     status >= 500 && env.NODE_ENV === 'production' ? 'Internal Server Error' : message;

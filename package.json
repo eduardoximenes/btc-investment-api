@@ -29,6 +29,7 @@
   "homepage": "https://github.com/eduardoximenes/btc-investment-api#readme",
   "dependencies": {
     "express": "^5.2.1",
+    "pino": "^10.3.1",
     "reflect-metadata": "^0.2.2",
     "typedi": "^0.10.0",
     "zod": "^4.6.0"
