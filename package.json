@@ -1,0 +1,41 @@
+{
+  "name": "btc-investment-api",
+  "version": "1.0.0",
+  "description": "BTC Investment API",
+  "type": "module",
+  "main": "dist/server/index.js",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server/index.ts",
+    "build": "tsc",
+    "start": "node dist/server/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eduardoximenes/btc-investment-api.git"
+  },
+  "author": "Eduardo Ximenes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eduardoximenes/btc-investment-api/issues"
+  },
+  "homepage": "https://github.com/eduardoximenes/btc-investment-api#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "reflect-metadata": "^0.2.2",
+    "typedi": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.5.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  }
+}
