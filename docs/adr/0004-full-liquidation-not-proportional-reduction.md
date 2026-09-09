@@ -1,0 +1,5 @@
+# Implement the edital's full-liquidate-then-reinvest rule, not proportional partial-lot reduction
+
+Real BTC ownership is fractional, and standard lot accounting (including real FIFO tax-lot accounting) handles a partial sale by simply reducing the touched lot's remaining quantity — no follow-up transaction needed. The edital's RF09 asks for something more specific and, arguably, less realistic: the last touched Investment is always closed completely, and any excess over the requested withdrawal is immediately reinvested as a brand-new Investment, explicitly producing two Transactions ("saque e reinvestimento") whenever that happens.
+
+We implement the edital's literal rule, not the simpler and more realistic proportional reduction, because RF09 is explicit about the two-transaction output and we treat the written spec as authoritative over what would be more true-to-life. A future maintainer who "simplifies" this into a proportional partial reduction would be fixing something that was deliberate, not broken — and would silently stop the system from ever emitting the `reinvestment` transaction the edital calls for.

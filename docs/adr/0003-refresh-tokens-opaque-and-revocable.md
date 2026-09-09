@@ -1,0 +1,3 @@
+# Refresh tokens are opaque and Redis-backed, not stateless JWTs
+
+The edital doesn't require a refresh token at all — we're adding one as a forward-looking convenience for the frontend (or ourselves) to use if needed. A stateless JWT refresh token can't be invalidated before it expires: a leaked token stays valid for its full TTL regardless of logout. Instead we store an opaque, random refresh token in Redis, keyed by user with a 7-day TTL, so `POST /v1/logout` can revoke it immediately. This costs one Redis lookup per refresh instead of a signature check — an acceptable trade for real revocability.
