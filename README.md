@@ -1,23 +1,48 @@
 # btc-investment-api
 Bitcoin investment API
 
-## Local development
-
-Day-to-day, run just the infra in Docker and the app on the host for fast hot-reload:
+## Getting started
 
 ```sh
-cp .env.example .env   # first time only
+cp .env.example .env        # first time only
 docker compose up -d postgres redis
+npm install
+npm run db:migrate
 npm run dev
 ```
 
-`npm run dev` reads `.env` automatically (via `--env-file-if-exists`) and points at
-Postgres/Redis through their published ports (`localhost:5432`, `localhost:6379`
-by default — see `.env.example` if you need to override them).
+Health check: `curl http://localhost:3000/v1/health`
 
-To run the whole stack containerized instead (e.g. to check it works exactly as
-an evaluator would run it), use `docker compose up` — this also builds and starts
-the `app` service, so don't run it alongside `npm run dev` on the same port.
+## Day-to-day
 
-> A fuller "getting started from a fresh clone" walkthrough (env var reference,
-> running tests, troubleshooting) lands with the foundation ticket (#17).
+After pulling a commit that added a migration, re-run:
+
+```sh
+npm run db:migrate
+```
+
+It applies pending migrations and regenerates the Prisma client. Skipping it
+shows up as `typecheck`/`build` failing on Prisma types that don't exist yet.
+
+## Running the whole stack in Docker
+
+```sh
+docker compose up --build
+```
+
+Starts `postgres`, `redis`, and `app` together — useful to check it runs the
+way an evaluator would run it. This does **not** apply migrations either; run
+`npm run db:migrate` yourself against the published Postgres port first.
+
+## Scripts
+
+| Command                     | What it does                                                |
+|------------------------------|--------------------------------------------------------------|
+| `npm run dev`                | Hot-reload dev server                                        |
+| `npm run build` / `start`    | Compile to `dist/` and run it                                 |
+| `npm run typecheck`          | `tsc --noEmit`                                                |
+| `npm run db:migrate`         | Apply pending migrations + regenerate Prisma client (dev)     |
+| `npm run db:migrate:deploy`  | Apply pending migrations only, no prompts (CI/deploy)          |
+| `npm run db:generate`        | Regenerate the Prisma client — needed after `db:migrate:deploy` |
+
+> Full walkthrough (env var reference, tests, troubleshooting) lands with #17.
