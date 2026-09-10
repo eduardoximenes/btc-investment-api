@@ -14,8 +14,9 @@
     "dev": "tsx watch --env-file-if-exists=.env src/server/index.ts",
     "build": "tsc",
     "start": "node --env-file-if-exists=.env dist/server/index.js",
-    "typecheck": "tsc --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "test": "node --env-file-if-exists=.env node_modules/.bin/vitest run",
+    "test:watch": "node --env-file-if-exists=.env node_modules/.bin/vitest",
     "db:generate": "node --env-file-if-exists=.env node_modules/.bin/prisma generate",
     "db:migrate": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate dev",
     "db:migrate:deploy": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate deploy"
@@ -43,8 +44,11 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^26.5.0",
+    "@types/supertest": "^7.2.1",
     "prisma": "^7.10.0",
+    "supertest": "^7.2.2",
     "tsx": "^4.23.13",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
   }
 }
