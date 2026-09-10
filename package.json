@@ -11,11 +11,16 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "tsx watch src/server/index.ts",
+    "dev": "tsx watch --env-file-if-exists=.env src/server/index.ts",
     "build": "tsc",
-    "start": "node dist/server/index.js",
-    "typecheck": "tsc --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node --env-file-if-exists=.env dist/server/index.js",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "test": "node --env-file-if-exists=.env node_modules/.bin/vitest run",
+    "test:watch": "node --env-file-if-exists=.env node_modules/.bin/vitest",
+    "postinstall": "node --env-file-if-exists=.env node_modules/.bin/prisma generate",
+    "db:generate": "node --env-file-if-exists=.env node_modules/.bin/prisma generate",
+    "db:migrate": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate dev && npm run db:generate",
+    "db:migrate:deploy": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate deploy"
   },
   "repository": {
     "type": "git",
@@ -28,14 +33,23 @@
   },
   "homepage": "https://github.com/eduardoximenes/btc-investment-api#readme",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "express": "^5.2.1",
+    "ioredis": "^6.0.0",
+    "pino": "^10.3.1",
     "reflect-metadata": "^0.2.2",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "zod": "^4.6.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^26.5.0",
+    "@types/supertest": "^7.2.1",
+    "prisma": "^7.10.0",
+    "supertest": "^7.2.2",
     "tsx": "^4.23.13",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
   }
 }

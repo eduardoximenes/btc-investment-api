@@ -4,13 +4,17 @@ import {
   LOGGER_SERVICE,
   type ILoggerService,
 } from '../../application/interfaces/logger.service.interface.ts';
+import { env } from '../config/env.ts';
 
 function statusFrom(err: unknown): number {
   if (
     err !== null &&
     typeof err === 'object' &&
     'status' in err &&
-    typeof err.status === 'number'
+    typeof err.status === 'number' &&
+    Number.isInteger(err.status) &&
+    err.status >= 100 &&
+    err.status <= 599
   ) {
     return err.status;
   }
@@ -32,15 +36,10 @@ export function errorHandlerMiddleware(
   const status = statusFrom(err);
   const message = err instanceof Error ? err.message : 'Internal Server Error';
 
-  logger.error(message, {
-    statusCode: status,
-    stack: err instanceof Error ? err.stack : undefined,
-  });
+  logger.error(message, { statusCode: status, err });
 
   const publicMessage =
-    status >= 500 && process.env.NODE_ENV === 'production'
-      ? 'Internal Server Error'
-      : message;
+    status >= 500 && env.NODE_ENV === 'production' ? 'Internal Server Error' : message;
 
   res.status(status).json({ statusCode: status, message: publicMessage, data: null });
 }
