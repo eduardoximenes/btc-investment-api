@@ -6,7 +6,7 @@ import {
 } from '../../../../application/interfaces/logger.service.interface.ts';
 import { getValidated } from '../../../../server/middlewares/validate.middleware.ts';
 import { API_VERSION } from '../../../../server/config/api-version.ts';
-import type { HealthQuery } from './health.schema.ts';
+import type { HealthQuery } from '../../schemas/v1/health.schema.ts';
 
 @Service()
 export class HealthController {
