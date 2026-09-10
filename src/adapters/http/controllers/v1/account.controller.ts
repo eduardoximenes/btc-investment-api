@@ -22,11 +22,7 @@ export class AccountController {
 
     try {
       const user = await this.registerUserUseCase.execute(dto);
-      sendSuccess(
-        res,
-        { id: user.id, name: user.name, email: user.email, createdAt: user.createdAt },
-        { statusCode: 201, message: 'account created' },
-      );
+      sendSuccess(res, user, { statusCode: 201, message: 'account created' });
     } catch (err) {
       if (err instanceof AccountAlreadyExistsError) {
         throw new HttpError(400, err.message);

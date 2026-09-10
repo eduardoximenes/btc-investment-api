@@ -1,4 +1,4 @@
-import type { User } from '../../entities/models/user.entity.ts';
+import type { PublicUser, User } from '../../entities/models/user.entity.ts';
 
 export interface CreateUserData {
   name: string;
@@ -8,7 +8,7 @@ export interface CreateUserData {
 
 export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
-  create(data: CreateUserData): Promise<User>;
+  create(data: CreateUserData): Promise<PublicUser>;
 }
 
 export const USER_REPOSITORY = 'IUserRepository';

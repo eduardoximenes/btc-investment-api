@@ -1,6 +1,6 @@
 import { Container, Service } from 'typedi';
 import { AccountAlreadyExistsError } from '../../entities/errors/account-already-exists.error.ts';
-import type { User } from '../../entities/models/user.entity.ts';
+import type { PublicUser } from '../../entities/models/user.entity.ts';
 import type { CreateUserDTO } from '../dtos/create-user.dto.ts';
 import {
   PASSWORD_HASHER,
@@ -18,7 +18,7 @@ export class RegisterUserUseCase {
     this.passwordHasher = Container.get<IPasswordHasher>(PASSWORD_HASHER);
   }
 
-  async execute(dto: CreateUserDTO): Promise<User> {
+  async execute(dto: CreateUserDTO): Promise<PublicUser> {
     const existing = await this.userRepository.findByEmail(dto.email);
     if (existing) {
       throw new AccountAlreadyExistsError();
