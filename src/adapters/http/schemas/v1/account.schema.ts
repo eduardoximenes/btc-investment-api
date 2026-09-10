@@ -1,13 +1,10 @@
 import { z } from 'zod';
 
-// bcrypt truncates silently past 72 bytes — reject here instead (issue
-// #19's Implementation Decisions), using byte length since a password can
-// contain multi-byte characters.
-const MAX_PASSWORD_BYTES = 72;
+const MAX_PASSWORD_BYTES = 64;
 
 export const createAccountSchema = z.object({
   name: z.string().min(1),
-  email: z.string().email(),
+  email: z.email(),
   password: z
     .string()
     .min(8)
