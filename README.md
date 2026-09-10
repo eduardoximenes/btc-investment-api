@@ -67,6 +67,7 @@ error naming whatever's missing or malformed — see
 | `PORT` / `HOST` | where the app listens |
 | `DATABASE_URL` | Postgres connection (Prisma) |
 | `REDIS_URL` | Redis connection (cache / refresh tokens / BullMQ, shared) |
+| `JWT_SECRET` | signs/verifies access tokens; generate with `openssl rand -hex 32` |
 | `POSTGRES_USER` / `PASSWORD` / `DB` | only consumed by `docker-compose.yml`, to provision the `postgres` service |
 | `POSTGRES_PORT` / `REDIS_PORT` | optional: override the host ports Docker publishes Postgres/Redis on, if 5432/6379 are already taken locally (update `DATABASE_URL`/`REDIS_URL` to match) |
 
