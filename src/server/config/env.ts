@@ -4,14 +4,15 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   HOST: z.string().min(1).default('0.0.0.0'),
-  DATABASE_URL: z.url({
-    protocol: /^postgres(ql)?$/,
-    error: 'must be a valid postgres(ql):// connection URL',
-  }),
-  REDIS_URL: z.url({
-    protocol: /^rediss?$/,
-    error: 'must be a valid redis(s):// connection URL',
-  }),
+  // z.url({ protocol }) only checks the scheme via regex — a host-less value
+  // like "postgresql:oops" still passes (WHATWG URL parsing doesn't require
+  // "//" + a host for non-special schemes). Require it explicitly instead.
+  DATABASE_URL: z
+    .string()
+    .regex(/^postgres(ql)?:\/\/[^\s/]+/, 'must be a valid postgres(ql):// connection URL'),
+  REDIS_URL: z
+    .string()
+    .regex(/^rediss?:\/\/[^\s/]+/, 'must be a valid redis(s):// connection URL'),
 });
 
 export type Env = z.infer<typeof envSchema>;

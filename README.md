@@ -32,6 +32,7 @@ is slow for active development. Instead, run just the infra in Docker and
 the app on the host:
 
 ```sh
+cp .env.example .env   # if you haven't already — npm install needs DATABASE_URL
 docker compose up -d postgres redis
 npm install
 npm run db:migrate     # first time, and again whenever you pull a new migration
@@ -81,6 +82,10 @@ error naming whatever's missing or malformed — see
 - **Migrations aren't applied automatically** by `docker compose up`,
   `npm run dev`, or a `git pull` — see `npm run db:migrate` above; nothing
   runs it for you.
+- **`npm install` fails with a Prisma config error** (`Cannot resolve
+  environment variable: DATABASE_URL`): `npm install` generates the Prisma
+  client automatically (a `postinstall` script), which needs `DATABASE_URL`
+  set — run `cp .env.example .env` first.
 
 ## Scripts
 
