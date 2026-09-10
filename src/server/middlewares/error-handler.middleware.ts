@@ -38,8 +38,7 @@ export function errorHandlerMiddleware(
 
   logger.error(message, { statusCode: status, err });
 
-  const publicMessage =
-    status >= 500 && env.NODE_ENV === 'production' ? 'Internal Server Error' : message;
+  const publicMessage = (status >= 500 && env.NODE_ENV === 'production') ? 'Internal Server Error' : message;
 
   res.status(status).json({ statusCode: status, message: publicMessage, data: null });
 }
