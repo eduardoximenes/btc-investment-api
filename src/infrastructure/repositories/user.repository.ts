@@ -1,0 +1,45 @@
+import { Prisma, type PrismaClient } from '@prisma/client';
+import { Container, Service } from 'typedi';
+import { AccountAlreadyExistsError } from '../../entities/errors/account-already-exists.error.ts';
+import type { User } from '../../entities/models/user.entity.ts';
+import type {
+  CreateUserData,
+  IUserRepository,
+} from '../../application/interfaces/user.repository.interface.ts';
+import { PRISMA_CLIENT } from '../database/prisma.client.ts';
+
+// Postgres' unique-constraint error code, surfaced by Prisma as P2002.
+const UNIQUE_CONSTRAINT_VIOLATION = 'P2002';
+
+@Service()
+export class UserRepository implements IUserRepository {
+  private readonly prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = Container.get<PrismaClient>(PRISMA_CLIENT);
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
+
+  async create(data: CreateUserData): Promise<User> {
+    try {
+      return await this.prisma.user.create({ data });
+    } catch (err) {
+      // RegisterUserUseCase checks findByEmail before calling create(), but
+      // that check-then-act isn't atomic: two concurrent registrations for
+      // the same email can both pass it and both land here, with the
+      // second hitting the DB's unique constraint instead. Translate that
+      // race into the same domain error the pre-check throws, rather than
+      // letting a raw Prisma error surface as an unmapped 500.
+      const isUniqueConstraintViolation =
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === UNIQUE_CONSTRAINT_VIOLATION;
+      if (isUniqueConstraintViolation) {
+        throw new AccountAlreadyExistsError();
+      }
+      throw err;
+    }
+  }
+}
