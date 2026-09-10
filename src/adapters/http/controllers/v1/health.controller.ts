@@ -4,7 +4,9 @@ import {
   LOGGER_SERVICE,
   type ILoggerService,
 } from '../../../../application/interfaces/logger.service.interface.ts';
+import { getValidated } from '../../../../server/middlewares/validate.middleware.ts';
 import { API_VERSION } from '../../../../server/config/api-version.ts';
+import type { HealthQuery } from './health.schema.ts';
 
 @Service()
 export class HealthController {
@@ -16,6 +18,12 @@ export class HealthController {
 
   handle = (_req: Request, res: Response): void => {
     this.logger.info('health_check');
-    res.status(200).json({ status: 'ok', version: API_VERSION });
+
+    const { verbose } = getValidated<HealthQuery>(res);
+    const body = verbose
+      ? { status: 'ok', version: API_VERSION, uptimeSeconds: process.uptime() }
+      : { status: 'ok', version: API_VERSION };
+
+    res.status(200).json(body);
   };
 }

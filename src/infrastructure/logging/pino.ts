@@ -20,8 +20,14 @@ function mixin(): Record<string, unknown> {
 // errors can carry things like the failing query or connection details in
 // extra fields, and those would otherwise get logged verbatim.
 function errSerializer(err: unknown): unknown {
-  if (!(err instanceof Error)) return err;
-  return { type: err.name, message: err.message, stack: err.stack };
+  if (err instanceof Error) {
+    return { type: err.name, message: err.message, stack: err.stack };
+  }
+  // next()/a rejected promise can carry any value (a string, a plain object
+  // with arbitrary — possibly sensitive — fields). Redact it rather than
+  // logging it verbatim; the whole point of this serializer is to not leak
+  // whatever shape an error happens to have.
+  return { type: typeof err, message: 'non-Error value thrown or rejected with (redacted)' };
 }
 
 const serializers = { err: errSerializer };
