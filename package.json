@@ -17,8 +17,9 @@
     "typecheck": "tsc --noEmit -p tsconfig.test.json",
     "test": "node --env-file-if-exists=.env node_modules/.bin/vitest run",
     "test:watch": "node --env-file-if-exists=.env node_modules/.bin/vitest",
+    "postinstall": "node --env-file-if-exists=.env node_modules/.bin/prisma generate",
     "db:generate": "node --env-file-if-exists=.env node_modules/.bin/prisma generate",
-    "db:migrate": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate dev",
+    "db:migrate": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate dev && npm run db:generate",
     "db:migrate:deploy": "node --env-file-if-exists=.env node_modules/.bin/prisma migrate deploy"
   },
   "repository": {

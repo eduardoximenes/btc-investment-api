@@ -5,14 +5,14 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
-
 COPY prisma ./prisma
 COPY prisma.config.ts ./
-# `prisma generate` never connects to the database, but prisma.config.ts still
-# requires DATABASE_URL to be set — a placeholder is enough at build time.
+# `npm ci`'s postinstall hook runs `prisma generate`, which never connects to
+# the database, but prisma.config.ts still requires DATABASE_URL to be set —
+# a placeholder is enough at build time. Must be set (and prisma/ copied)
+# before `npm ci` so postinstall succeeds.
 ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
-RUN npx prisma generate
+RUN npm ci
 
 COPY tsconfig.json ./
 COPY src ./src
@@ -24,7 +24,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# --ignore-scripts: this stage never installs the `prisma` CLI (see below),
+# so the postinstall hook (which needs it) can't run here anyway — carrying
+# over the already-generated client instead.
+RUN npm ci --omit=dev --ignore-scripts
 
 # The `prisma` CLI stays a devDependency (its own tooling drags in vulnerable,
 # migration/generation-only transitive deps we don't want in the runtime
