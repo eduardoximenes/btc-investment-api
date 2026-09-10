@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { z, type ZodType } from 'zod';
-import { HttpError } from '../../application/errors/http-error.ts';
+import { HttpError } from '../../adapters/http/errors/http-error.ts';
 
 type ValidationSource = 'body' | 'query' | 'params';
 

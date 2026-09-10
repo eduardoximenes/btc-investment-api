@@ -86,15 +86,21 @@ instead of a raw destructure crash on `undefined`.
 ## How failures reach the client
 
 On failure, `validateRequest` raises an `HttpError(400, message)`
-(`src/application/errors/http-error.ts`) via `next(err)`. This is the same
+(`src/adapters/http/errors/http-error.ts`) via `next(err)`. This is the same
 shape `error-handler.middleware.ts` already renders for every other error —
 no separate validation-error path. The response is the project's existing
 `{ statusCode, message, data: null }` error shape, with `message` being
 Zod's own `z.prettifyError` output naming the offending field(s).
 
-`HttpError` isn't validation-specific — throw it from anywhere (a
-controller, a use case) that needs to fail with a specific HTTP status,
-e.g. `throw new HttpError(409, 'account already exists')`.
+`HttpError` isn't validation-specific — throw it from anywhere in the
+adapter layer (a controller, a middleware) that needs to fail with a
+specific HTTP status. It's **adapter-layer only**, though: a status code is
+a transport detail, and a use case shouldn't know one exists. When a
+business rule fails (e.g. #2's "account already exists"), the use case
+throws a domain error from `entities/errors/` instead — no HTTP awareness,
+just a meaningful type — and the adapter boundary is what maps that domain
+error to the right `HttpError`/status, not the use case constructing one
+itself.
 
 ## Demonstrated by
 
