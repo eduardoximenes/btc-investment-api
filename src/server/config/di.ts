@@ -1,11 +1,15 @@
 import { Container } from 'typedi';
 import { LOGGER_SERVICE } from '../../application/interfaces/logger.service.interface.ts';
 import { PASSWORD_HASHER } from '../../application/interfaces/password-hasher.interface.ts';
+import { REFRESH_TOKEN_REPOSITORY } from '../../application/interfaces/refresh-token.repository.interface.ts';
+import { TOKEN_SERVICE } from '../../application/interfaces/token.service.interface.ts';
 import { USER_REPOSITORY } from '../../application/interfaces/user.repository.interface.ts';
 import { REDIS_CLIENT, redisClient } from '../../infrastructure/cache/redis.client.ts';
 import { PRISMA_CLIENT, prismaClient } from '../../infrastructure/database/prisma.client.ts';
 import { BcryptPasswordHasherService } from '../../infrastructure/services/bcrypt-password-hasher.service.ts';
+import { JwtTokenService } from '../../infrastructure/services/jwt-token.service.ts';
 import { LoggerService } from '../../infrastructure/services/logger.service.ts';
+import { RefreshTokenRepository } from '../../infrastructure/repositories/refresh-token.repository.ts';
 import { UserRepository } from '../../infrastructure/repositories/user.repository.ts';
 
 Container.set(LOGGER_SERVICE, Container.get(LoggerService));
@@ -13,3 +17,5 @@ Container.set(PRISMA_CLIENT, prismaClient);
 Container.set(REDIS_CLIENT, redisClient);
 Container.set(PASSWORD_HASHER, Container.get(BcryptPasswordHasherService));
 Container.set(USER_REPOSITORY, Container.get(UserRepository));
+Container.set(TOKEN_SERVICE, Container.get(JwtTokenService));
+Container.set(REFRESH_TOKEN_REPOSITORY, Container.get(RefreshTokenRepository));

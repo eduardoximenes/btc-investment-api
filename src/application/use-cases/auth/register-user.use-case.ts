@@ -1,12 +1,12 @@
 import { Container, Service } from 'typedi';
-import { AccountAlreadyExistsError } from '../../entities/errors/account-already-exists.error.ts';
-import type { PublicUser } from '../../entities/models/user.entity.ts';
-import type { CreateUserDTO } from '../dtos/create-user.dto.ts';
+import { AccountAlreadyExistsError } from '../../../entities/errors/auth/account-already-exists.error.ts';
+import type { PublicUser } from '../../../entities/models/user.entity.ts';
+import type { CreateUserDTO } from '../../dtos/auth/create-user.dto.ts';
 import {
   PASSWORD_HASHER,
   type IPasswordHasher,
-} from '../interfaces/password-hasher.interface.ts';
-import { USER_REPOSITORY, type IUserRepository } from '../interfaces/user.repository.interface.ts';
+} from '../../interfaces/password-hasher.interface.ts';
+import { USER_REPOSITORY, type IUserRepository } from '../../interfaces/user.repository.interface.ts';
 
 @Service()
 export class RegisterUserUseCase {

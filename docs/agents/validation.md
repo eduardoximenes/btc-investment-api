@@ -12,6 +12,22 @@ the `application`/`adapters` split already in the codebase.
   place, clearly marked as an HTTP-layer concern rather than scattered
   per-controller. One `z.object({...})` per validated source (`body`/
   `query`/`params`).
+- Once a layer accumulates one file per **HTTP action** for a feature
+  (a schema, a controller, a use case, a domain error — a new one of
+  each per endpoint), those files move into a `<feature>/` subfolder
+  within that layer — e.g. `adapters/http/schemas/v1/auth/`,
+  `application/use-cases/auth/`, `entities/errors/auth/`. A layer
+  bounded by *concept* count instead — one file per domain noun or per
+  port/technical-capability, not one per action — stays flat: domain
+  entities (`entities/models/`), ports (`application/interfaces/`),
+  and their infrastructure implementations
+  (`infrastructure/repositories/`, `infrastructure/services/`). A new
+  auth action reuses the existing `UserRepository`/`BcryptPasswordHasherService`
+  rather than adding a new one, the same way it reuses the existing
+  `User` entity and `IUserRepository` port — so those layers don't
+  pile up the way controllers/use-cases/dtos/errors do, and grouping
+  them by feature wouldn't earn its keep. `health` stays flat
+  everywhere too — one file per layer, nothing to group.
 - The generic middleware that applies a schema lives once, at
   `src/server/middlewares/validate.middleware.ts`: `validateRequest(schema, source)`.
 - Wire it in the route file, before the controller:
@@ -29,8 +45,8 @@ which routinely carries fields the use case has no business seeing.
 Concrete example — a registration endpoint's schema:
 
 ```ts
-// adapters/http/schemas/v1/account.schema.ts
-export const createAccountSchema = z.object({
+// adapters/http/schemas/v1/auth/register.schema.ts
+export const registerSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(8),
@@ -55,7 +71,7 @@ just the shape. The controller is the only thing that knows about both, and
 its job is exactly to bridge them:
 
 ```ts
-// application/dtos/create-user.dto.ts
+// application/dtos/auth/create-user.dto.ts
 export interface CreateUserDTO {
   name: string;
   email: string;
@@ -63,8 +79,8 @@ export interface CreateUserDTO {
   // no confirmPassword — the use case never needs to know it existed
 }
 
-// adapters/http/controllers/v1/account.controller.ts
-const { name, email, password } = getValidated<CreateAccountBody>(res);
+// adapters/http/controllers/v1/auth/register.controller.ts
+const { name, email, password } = getValidated<RegisterBody>(res);
 const dto: CreateUserDTO = { name, email, password };
 await this.createUserUseCase.execute(dto);
 ```
@@ -73,6 +89,51 @@ Not every endpoint needs this split — one with no use case behind it (like
 health below) has nothing to bridge to, so its schema is the only artifact
 that exists. Reach for a real `application/dtos/*` type once a use case is
 actually involved.
+
+## One DTO per boundary is not automatic
+
+A use case sits between two boundaries — it receives a DTO from a
+controller, and may call a repository or service on the way out. It's
+tempting to assume each boundary needs its own DTO, but that's not the
+rule: most of the time a use case just destructures what it received and
+passes primitives onward. `LoginUserUseCase` never builds a second DTO —
+it calls `userRepository.findByEmail(dto.email)` and
+`passwordHasher.compare(dto.password, user.passwordHash)` with individual
+fields, not the whole object.
+
+A new DTO earns its existence only when a downstream call needs the
+**whole object, in a shape that has genuinely changed** — a field added,
+removed, or replaced, such that reusing the parent type would misrepresent
+what's actually being passed. `RegisterUserUseCase` is the case that
+applies:
+
+```ts
+// application/dtos/auth/create-user.dto.ts
+export interface CreateUserDTO {
+  name: string;
+  email: string;
+  password: string; // plaintext, from the controller
+}
+
+export interface CreateUserRecordDTO {
+  name: string;
+  email: string;
+  passwordHash: string; // hashed, headed to the repository — password is gone
+}
+```
+
+`password` doesn't survive into what the repository receives — it becomes
+`passwordHash` inside the use case (`passwordHasher.hash(dto.password)`).
+Reusing `CreateUserDTO` on `IUserRepository.create()`'s signature would
+claim the repository accepts a plaintext password, which is exactly the
+kind of mistake the schema/DTO split above exists to prevent. That's why
+`CreateUserRecordDTO` exists as its own type instead of being folded into
+`CreateUserDTO` — not because it crossed a layer, but because the field
+set actually changed.
+
+Name the new type for the **stage** it represents (`CreateUserRecordDTO` —
+"this is what gets persisted"), not for the layer it lives in
+(`CreateUserRepositoryDTO` would describe *where*, not *what*).
 
 ## How a controller reads the validated value
 

@@ -43,6 +43,7 @@ services:
       HOST: 0.0.0.0
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-btc_investment}
       REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - '${PORT:-3000}:3000'
     volumes:
