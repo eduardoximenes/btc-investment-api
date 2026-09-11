@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
-import { app } from '../src/server/app.ts';
-import { prismaClient } from '../src/infrastructure/database/prisma.client.ts';
+import { app } from '../../src/server/app.ts';
+import { prismaClient } from '../../src/infrastructure/database/prisma.client.ts';
 
 describe('POST /v1/account', () => {
   const email = 'registration-test@example.com';

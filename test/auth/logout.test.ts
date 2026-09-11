@@ -1,8 +1,8 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
-import { app } from '../src/server/app.ts';
-import { redisClient } from '../src/infrastructure/cache/redis.client.ts';
-import { REFRESH_TOKEN_TTL_SECONDS } from '../src/application/constants/token-ttl.constants.ts';
+import { app } from '../../src/server/app.ts';
+import { redisClient } from '../../src/infrastructure/cache/redis.client.ts';
+import { REFRESH_TOKEN_TTL_SECONDS } from '../../src/application/constants/token-ttl.constants.ts';
 
 describe('POST /v1/logout', () => {
   afterAll(async () => {

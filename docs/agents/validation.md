@@ -12,13 +12,22 @@ the `application`/`adapters` split already in the codebase.
   place, clearly marked as an HTTP-layer concern rather than scattered
   per-controller. One `z.object({...})` per validated source (`body`/
   `query`/`params`).
-- Once a feature accumulates more than one file per action in a layer
-  (a schema, a controller, a use case... per endpoint), those files move
-  into a `<feature>/` subfolder within that layer — e.g.
-  `adapters/http/schemas/v1/auth/`, `application/use-cases/auth/`. A
-  layer bounded by domain-concept count rather than action count
-  (`entities/models/`, `application/interfaces/`) stays flat regardless.
-  `health` stays flat too — one file per layer, nothing to group.
+- Once a layer accumulates one file per **HTTP action** for a feature
+  (a schema, a controller, a use case, a domain error — a new one of
+  each per endpoint), those files move into a `<feature>/` subfolder
+  within that layer — e.g. `adapters/http/schemas/v1/auth/`,
+  `application/use-cases/auth/`, `entities/errors/auth/`. A layer
+  bounded by *concept* count instead — one file per domain noun or per
+  port/technical-capability, not one per action — stays flat: domain
+  entities (`entities/models/`), ports (`application/interfaces/`),
+  and their infrastructure implementations
+  (`infrastructure/repositories/`, `infrastructure/services/`). A new
+  auth action reuses the existing `UserRepository`/`BcryptPasswordHasherService`
+  rather than adding a new one, the same way it reuses the existing
+  `User` entity and `IUserRepository` port — so those layers don't
+  pile up the way controllers/use-cases/dtos/errors do, and grouping
+  them by feature wouldn't earn its keep. `health` stays flat
+  everywhere too — one file per layer, nothing to group.
 - The generic middleware that applies a schema lives once, at
   `src/server/middlewares/validate.middleware.ts`: `validateRequest(schema, source)`.
 - Wire it in the route file, before the controller:

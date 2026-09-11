@@ -2,11 +2,11 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import request from 'supertest';
-import { app } from '../src/server/app.ts';
-import { env } from '../src/server/config/env.ts';
-import { prismaClient } from '../src/infrastructure/database/prisma.client.ts';
-import { redisClient } from '../src/infrastructure/cache/redis.client.ts';
-import { REFRESH_TOKEN_TTL_SECONDS } from '../src/application/constants/token-ttl.constants.ts';
+import { app } from '../../src/server/app.ts';
+import { env } from '../../src/server/config/env.ts';
+import { prismaClient } from '../../src/infrastructure/database/prisma.client.ts';
+import { redisClient } from '../../src/infrastructure/cache/redis.client.ts';
+import { REFRESH_TOKEN_TTL_SECONDS } from '../../src/application/constants/token-ttl.constants.ts';
 
 describe('POST /v1/login', () => {
   const email = 'login-test@example.com';

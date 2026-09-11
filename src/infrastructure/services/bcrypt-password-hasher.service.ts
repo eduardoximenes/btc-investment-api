@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Service } from 'typedi';
-import type { IPasswordHasher } from '../../../application/interfaces/password-hasher.interface.ts';
+import type { IPasswordHasher } from '../../application/interfaces/password-hasher.interface.ts';
 
 const SALT_ROUNDS = 10;
 
