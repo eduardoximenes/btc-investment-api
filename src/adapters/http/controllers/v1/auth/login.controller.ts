@@ -1,12 +1,12 @@
 import { Container, Service } from 'typedi';
 import type { Request, Response } from 'express';
-import { InvalidCredentialsError } from '../../../../entities/errors/invalid-credentials.error.ts';
-import type { LoginUserDTO } from '../../../../application/dtos/login-user.dto.ts';
-import { LoginUserUseCase } from '../../../../application/use-cases/login-user.use-case.ts';
-import { getValidated } from '../../../../server/middlewares/validate.middleware.ts';
-import { HttpError } from '../../errors/http-error.ts';
-import { sendSuccess } from '../../responses/send-success.ts';
-import type { LoginBody } from '../../schemas/v1/login.schema.ts';
+import { InvalidCredentialsError } from '../../../../../entities/errors/auth/invalid-credentials.error.ts';
+import type { LoginUserDTO } from '../../../../../application/dtos/auth/login-user.dto.ts';
+import { LoginUserUseCase } from '../../../../../application/use-cases/auth/login-user.use-case.ts';
+import { getValidated } from '../../../../../server/middlewares/validate.middleware.ts';
+import { HttpError } from '../../../errors/http-error.ts';
+import { sendSuccess } from '../../../responses/send-success.ts';
+import type { LoginBody } from '../../../schemas/v1/auth/login.schema.ts';
 
 @Service()
 export class LoginController {

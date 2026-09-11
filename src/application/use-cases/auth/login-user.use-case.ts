@@ -1,17 +1,17 @@
 import { Container, Service } from 'typedi';
-import { InvalidCredentialsError } from '../../entities/errors/invalid-credentials.error.ts';
-import type { AuthTokensDTO } from '../dtos/auth-tokens.dto.ts';
-import type { LoginUserDTO } from '../dtos/login-user.dto.ts';
+import { InvalidCredentialsError } from '../../../entities/errors/auth/invalid-credentials.error.ts';
+import type { AuthTokensDTO } from '../../dtos/auth/auth-tokens.dto.ts';
+import type { LoginUserDTO } from '../../dtos/auth/login-user.dto.ts';
 import {
   PASSWORD_HASHER,
   type IPasswordHasher,
-} from '../interfaces/password-hasher.interface.ts';
+} from '../../interfaces/password-hasher.interface.ts';
 import {
   REFRESH_TOKEN_REPOSITORY,
   type IRefreshTokenRepository,
-} from '../interfaces/refresh-token.repository.interface.ts';
-import { TOKEN_SERVICE, type ITokenService } from '../interfaces/token.service.interface.ts';
-import { USER_REPOSITORY, type IUserRepository } from '../interfaces/user.repository.interface.ts';
+} from '../../interfaces/refresh-token.repository.interface.ts';
+import { TOKEN_SERVICE, type ITokenService } from '../../interfaces/token.service.interface.ts';
+import { USER_REPOSITORY, type IUserRepository } from '../../interfaces/user.repository.interface.ts';
 
 @Service()
 export class LoginUserUseCase {

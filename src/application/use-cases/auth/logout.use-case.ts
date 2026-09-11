@@ -2,7 +2,7 @@ import { Container, Service } from 'typedi';
 import {
   REFRESH_TOKEN_REPOSITORY,
   type IRefreshTokenRepository,
-} from '../interfaces/refresh-token.repository.interface.ts';
+} from '../../interfaces/refresh-token.repository.interface.ts';
 
 @Service()
 export class LogoutUseCase {

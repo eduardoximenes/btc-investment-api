@@ -12,6 +12,13 @@ the `application`/`adapters` split already in the codebase.
   place, clearly marked as an HTTP-layer concern rather than scattered
   per-controller. One `z.object({...})` per validated source (`body`/
   `query`/`params`).
+- Once a feature accumulates more than one file per action in a layer
+  (a schema, a controller, a use case... per endpoint), those files move
+  into a `<feature>/` subfolder within that layer — e.g.
+  `adapters/http/schemas/v1/auth/`, `application/use-cases/auth/`. A
+  layer bounded by domain-concept count rather than action count
+  (`entities/models/`, `application/interfaces/`) stays flat regardless.
+  `health` stays flat too — one file per layer, nothing to group.
 - The generic middleware that applies a schema lives once, at
   `src/server/middlewares/validate.middleware.ts`: `validateRequest(schema, source)`.
 - Wire it in the route file, before the controller:
@@ -29,8 +36,8 @@ which routinely carries fields the use case has no business seeing.
 Concrete example — a registration endpoint's schema:
 
 ```ts
-// adapters/http/schemas/v1/account.schema.ts
-export const createAccountSchema = z.object({
+// adapters/http/schemas/v1/auth/register.schema.ts
+export const registerSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(8),
@@ -55,7 +62,7 @@ just the shape. The controller is the only thing that knows about both, and
 its job is exactly to bridge them:
 
 ```ts
-// application/dtos/create-user.dto.ts
+// application/dtos/auth/create-user.dto.ts
 export interface CreateUserDTO {
   name: string;
   email: string;
@@ -63,8 +70,8 @@ export interface CreateUserDTO {
   // no confirmPassword — the use case never needs to know it existed
 }
 
-// adapters/http/controllers/v1/account.controller.ts
-const { name, email, password } = getValidated<CreateAccountBody>(res);
+// adapters/http/controllers/v1/auth/register.controller.ts
+const { name, email, password } = getValidated<RegisterBody>(res);
 const dto: CreateUserDTO = { name, email, password };
 await this.createUserUseCase.execute(dto);
 ```
@@ -92,7 +99,7 @@ what's actually being passed. `RegisterUserUseCase` is the case that
 applies:
 
 ```ts
-// application/dtos/create-user.dto.ts
+// application/dtos/auth/create-user.dto.ts
 export interface CreateUserDTO {
   name: string;
   email: string;

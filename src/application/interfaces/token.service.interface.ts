@@ -1,4 +1,4 @@
-import type { AccessTokenPayloadDTO } from '../dtos/access-token-payload.dto.ts';
+import type { AccessTokenPayloadDTO } from '../dtos/auth/access-token-payload.dto.ts';
 
 export interface ITokenService {
   signAccessToken(payload: AccessTokenPayloadDTO): string;

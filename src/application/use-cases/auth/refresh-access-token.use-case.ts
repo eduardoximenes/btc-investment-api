@@ -1,10 +1,10 @@
 import { Container, Service } from 'typedi';
-import { InvalidRefreshTokenError } from '../../entities/errors/invalid-refresh-token.error.ts';
+import { InvalidRefreshTokenError } from '../../../entities/errors/auth/invalid-refresh-token.error.ts';
 import {
   REFRESH_TOKEN_REPOSITORY,
   type IRefreshTokenRepository,
-} from '../interfaces/refresh-token.repository.interface.ts';
-import { TOKEN_SERVICE, type ITokenService } from '../interfaces/token.service.interface.ts';
+} from '../../interfaces/refresh-token.repository.interface.ts';
+import { TOKEN_SERVICE, type ITokenService } from '../../interfaces/token.service.interface.ts';
 
 @Service()
 export class RefreshAccessTokenUseCase {

@@ -6,11 +6,11 @@ import { TOKEN_SERVICE } from '../../application/interfaces/token.service.interf
 import { USER_REPOSITORY } from '../../application/interfaces/user.repository.interface.ts';
 import { REDIS_CLIENT, redisClient } from '../../infrastructure/cache/redis.client.ts';
 import { PRISMA_CLIENT, prismaClient } from '../../infrastructure/database/prisma.client.ts';
-import { BcryptPasswordHasherService } from '../../infrastructure/services/bcrypt-password-hasher.service.ts';
-import { JwtTokenService } from '../../infrastructure/services/jwt-token.service.ts';
+import { BcryptPasswordHasherService } from '../../infrastructure/services/auth/bcrypt-password-hasher.service.ts';
+import { JwtTokenService } from '../../infrastructure/services/auth/jwt-token.service.ts';
 import { LoggerService } from '../../infrastructure/services/logger.service.ts';
-import { RefreshTokenRepository } from '../../infrastructure/repositories/refresh-token.repository.ts';
-import { UserRepository } from '../../infrastructure/repositories/user.repository.ts';
+import { RefreshTokenRepository } from '../../infrastructure/repositories/auth/refresh-token.repository.ts';
+import { UserRepository } from '../../infrastructure/repositories/auth/user.repository.ts';
 
 Container.set(LOGGER_SERVICE, Container.get(LoggerService));
 Container.set(PRISMA_CLIENT, prismaClient);

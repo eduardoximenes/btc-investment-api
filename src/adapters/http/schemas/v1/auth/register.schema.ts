@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const MAX_PASSWORD_BYTES = 64;
 
-export const createAccountSchema = z.object({
+export const registerSchema = z.object({
   name: z.string().min(1),
   email: z.email(),
   password: z
@@ -13,4 +13,4 @@ export const createAccountSchema = z.object({
     }),
 });
 
-export type CreateAccountBody = z.infer<typeof createAccountSchema>;
+export type RegisterBody = z.infer<typeof registerSchema>;
