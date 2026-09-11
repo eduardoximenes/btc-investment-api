@@ -25,4 +25,13 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
       REFRESH_TOKEN_TTL_SECONDS,
     );
   }
+
+  async find(token: string): Promise<number | null> {
+    const value = await this.redis.get(`${REFRESH_TOKEN_KEY_PREFIX}${token}`);
+    return value === null ? null : Number(value);
+  }
+
+  async delete(token: string): Promise<void> {
+    await this.redis.del(`${REFRESH_TOKEN_KEY_PREFIX}${token}`);
+  }
 }
