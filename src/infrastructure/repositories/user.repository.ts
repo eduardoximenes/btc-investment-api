@@ -2,10 +2,8 @@ import { Prisma, type PrismaClient } from '@prisma/client';
 import { Container, Service } from 'typedi';
 import { AccountAlreadyExistsError } from '../../entities/errors/account-already-exists.error.ts';
 import type { PublicUser, User } from '../../entities/models/user.entity.ts';
-import type {
-  CreateUserData,
-  IUserRepository,
-} from '../../application/interfaces/user.repository.interface.ts';
+import type { CreateUserRecordDTO } from '../../application/dtos/create-user.dto.ts';
+import type { IUserRepository } from '../../application/interfaces/user.repository.interface.ts';
 import { PRISMA_CLIENT } from '../database/prisma.client.ts';
 
 // Postgres' unique-constraint error code, surfaced by Prisma as P2002.
@@ -23,7 +21,7 @@ export class UserRepository implements IUserRepository {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  async create(data: CreateUserData): Promise<PublicUser> {
+  async create(data: CreateUserRecordDTO): Promise<PublicUser> {
     try {
       return await this.prisma.user.create({
         data,

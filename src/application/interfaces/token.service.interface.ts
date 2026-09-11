@@ -1,10 +1,8 @@
-export interface AccessTokenPayload {
-  userId: number;
-}
+import type { AccessTokenPayloadDTO } from '../dtos/access-token-payload.dto.ts';
 
 export interface ITokenService {
-  signAccessToken(payload: AccessTokenPayload): string;
-  verifyAccessToken(token: string): AccessTokenPayload;
+  signAccessToken(payload: AccessTokenPayloadDTO): string;
+  verifyAccessToken(token: string): AccessTokenPayloadDTO;
   generateRefreshToken(): string;
 }
 

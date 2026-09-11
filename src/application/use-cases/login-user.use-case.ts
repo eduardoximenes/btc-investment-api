@@ -1,6 +1,6 @@
 import { Container, Service } from 'typedi';
 import { InvalidCredentialsError } from '../../entities/errors/invalid-credentials.error.ts';
-import type { AuthTokens } from '../dtos/auth-tokens.dto.ts';
+import type { AuthTokensDTO } from '../dtos/auth-tokens.dto.ts';
 import type { LoginUserDTO } from '../dtos/login-user.dto.ts';
 import {
   PASSWORD_HASHER,
@@ -27,7 +27,7 @@ export class LoginUserUseCase {
     this.refreshTokenRepository = Container.get<IRefreshTokenRepository>(REFRESH_TOKEN_REPOSITORY);
   }
 
-  async execute(dto: LoginUserDTO): Promise<AuthTokens> {
+  async execute(dto: LoginUserDTO): Promise<AuthTokensDTO> {
     const user = await this.userRepository.findByEmail(dto.email);
     if (!user) {
       throw new InvalidCredentialsError();

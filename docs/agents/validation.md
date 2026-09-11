@@ -74,6 +74,51 @@ health below) has nothing to bridge to, so its schema is the only artifact
 that exists. Reach for a real `application/dtos/*` type once a use case is
 actually involved.
 
+## One DTO per boundary is not automatic
+
+A use case sits between two boundaries — it receives a DTO from a
+controller, and may call a repository or service on the way out. It's
+tempting to assume each boundary needs its own DTO, but that's not the
+rule: most of the time a use case just destructures what it received and
+passes primitives onward. `LoginUserUseCase` never builds a second DTO —
+it calls `userRepository.findByEmail(dto.email)` and
+`passwordHasher.compare(dto.password, user.passwordHash)` with individual
+fields, not the whole object.
+
+A new DTO earns its existence only when a downstream call needs the
+**whole object, in a shape that has genuinely changed** — a field added,
+removed, or replaced, such that reusing the parent type would misrepresent
+what's actually being passed. `RegisterUserUseCase` is the case that
+applies:
+
+```ts
+// application/dtos/create-user.dto.ts
+export interface CreateUserDTO {
+  name: string;
+  email: string;
+  password: string; // plaintext, from the controller
+}
+
+export interface CreateUserRecordDTO {
+  name: string;
+  email: string;
+  passwordHash: string; // hashed, headed to the repository — password is gone
+}
+```
+
+`password` doesn't survive into what the repository receives — it becomes
+`passwordHash` inside the use case (`passwordHasher.hash(dto.password)`).
+Reusing `CreateUserDTO` on `IUserRepository.create()`'s signature would
+claim the repository accepts a plaintext password, which is exactly the
+kind of mistake the schema/DTO split above exists to prevent. That's why
+`CreateUserRecordDTO` exists as its own type instead of being folded into
+`CreateUserDTO` — not because it crossed a layer, but because the field
+set actually changed.
+
+Name the new type for the **stage** it represents (`CreateUserRecordDTO` —
+"this is what gets persisted"), not for the layer it lives in
+(`CreateUserRepositoryDTO` would describe *where*, not *what*).
+
 ## How a controller reads the validated value
 
 `validateRequest` parses `req[source]` and, on success, assigns the parsed

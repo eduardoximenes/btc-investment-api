@@ -3,3 +3,9 @@ export interface CreateUserDTO {
   email: string;
   password: string;
 }
+
+export interface CreateUserRecordDTO {
+  name: string;
+  email: string;
+  passwordHash: string;
+}
