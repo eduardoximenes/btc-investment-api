@@ -67,7 +67,7 @@ describe('POST /v1/login', () => {
     await redisClient.del(`refresh:${second.body.data.refreshToken}`);
   });
 
-  it('rejects a wrong password with 401 "invalid password"', async () => {
+  it('rejects a wrong password with 401 "invalid credentials"', async () => {
     const response = await request(app)
       .post('/v1/login')
       .send({ email, password: 'not-the-right-password' });
@@ -75,7 +75,7 @@ describe('POST /v1/login', () => {
     expect(response.status).toBe(401);
     expect(response.body).toEqual({
       statusCode: 401,
-      message: 'invalid password',
+      message: 'invalid credentials',
       data: null,
     });
   });
@@ -88,7 +88,7 @@ describe('POST /v1/login', () => {
     expect(response.status).toBe(401);
     expect(response.body).toEqual({
       statusCode: 401,
-      message: 'invalid password',
+      message: 'invalid credentials',
       data: null,
     });
   });
